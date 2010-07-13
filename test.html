@@ -1,0 +1,47 @@
+<html>
+  <head>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="lib/underscore.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="dist/jam-0.0.1.js" type="text/javascript" charset="utf-8"></script>
+
+    <script type="text/javascript" charset="utf-8">
+      $(document).ready(function () {
+        EncodingQueue = GridView('encoding-queue', {
+          perPage: 2,
+          templateSelector: '#templates .grid-container',
+          holderSelector: '#grid-holder',
+          pageWidth: 700
+        }, {
+          drawBlankState: function () {
+            return console.log('sdfghj')
+          },
+
+          gridItemHTML: function (item) {
+            return '<p>' + item + '</p>'
+          }
+        })
+
+        encodingQueue = new EncodingQueue([1, 2, 3, 4])
+      })
+
+    </script>
+
+  </head>
+  <body>
+
+    <div id='grid-holder'></div>
+
+    <div id='templates'>
+      <p>templates below</p>
+      <div class='grid-container'>
+        <div class='header'>
+          <h2>Hello</h2>
+        </div>
+        <div class='view-port'>
+          <div class='page-holder clearfix'></div>
+        </div>
+      </div>
+    </div>
+
+  </body>
+</html>
