@@ -22,7 +22,7 @@ Jam.GridView = function (name, options, methods) {
     this.eventNamespace = name + ':' + widget
     this.name = name
     this.collection = collection
-    this.settings = $.extend(options, Jam.GridView.defaults)
+    this.settings = $.extend(Jam.GridView.defaults, options)
     this.page = 1
     this.html = $(this.settings.templateSelector).clone()
     this.holder = $(this.settings.holderSelector)
@@ -42,17 +42,28 @@ Jam.GridView.instanceMethods = {
     return this.page != this.pagesRequired
   },
 
-  draw: function () {
+  generateHtml: function () {
     var self = this
-    for (var i=1; i <= pagesRequired(); i++) drawPage(i)
-    addStyles()
-    drawPaginationControls()
-    self.eventHandler.bind('pageAnimationEnd.' + this.eventNamespace, function () {
+    var pageTemplate = $('<ul class="grid-view-page clearfix"></ul>')
+    var gridItemWrap = $('<li class="grid-view-item"></li>').css({'float': 'left', 'display': 'inline'})
+
+    if (self.collection.length > 0) {
+      for (var i=1; i <= pagesRequired(); i++) drawPage(i)
       drawPaginationControls()
-    })
-    this.holder.html(this.html.addClass(this.name))
+      self.eventHandler.bind('pageAnimationStart.' + this.eventNamespace, function () {
+        drawPaginationControls()
+      })
+    } else {
+      drawBlankState()
+    };
+
+    addStyles()
+    return this.html.addClass(this.name)
 
     function addStyles () {
+      self.holder.css({
+        'width': self.settings.pageWidth
+      })
       self.html
         .find('.grid-page-holder')
           .css({
@@ -76,11 +87,16 @@ Jam.GridView.instanceMethods = {
           })
     }
 
+    function drawBlankState () {
+      if (self.settings.blankStateHtml) {
+        self.html.find('.grid-page-holder').append(pageTemplate.clone().append(self.settings.blankStateHtml))
+      };
+    }
+
     function drawPage (pageNum) {
       var startIndex = (pageNum - 1) * self.settings.pageItems
       var endIndex = pageNum * self.settings.pageItems
-      var pageHtml = $('<ul class="grid-view-page clearfix"></ul>')
-      var gridItemWrap = $('<li class="grid-view-item"></li>').css({'float': 'left', 'display': 'inline'})
+      var pageHtml = pageTemplate.clone()
 
       pageHtml.attr('id', 'grid-view-page-' + pageNum)
       $.each(self.collection.slice(startIndex, endIndex), function () {
@@ -92,7 +108,7 @@ Jam.GridView.instanceMethods = {
     function drawPaginationControls () {
 
       function pageNumHref (pageNum) {
-        if (self.settings.sammyPagination) {
+        if (self.settings.hashPagination) {
           return '#/' + self.name + '/page/' + pageNum
         } else {
           return '#'
@@ -109,7 +125,7 @@ Jam.GridView.instanceMethods = {
 
       self.holder.find('.grid-view-page-controls').remove()
 
-      var pageControlsHtml = $('<div class="grid-view-page-controls"><a class="backward">Prev</a><a class="forward">Next</a></div>')
+      var pageControlsHtml = $('<div class="grid-view-page-controls"><a class="page-link backward">Prev</a><a class="page-link forward">Next</a></div>')
       pageControlsHtml
         .find('.backward')
           .attr('href', self.canPageBackward() ? pageNumHref(previousPageNum()) : '#')
@@ -143,6 +159,15 @@ Jam.GridView.instanceMethods = {
       self.pagesRequired = Math.ceil(self.collection.length / self.settings.pageItems)
       return self.pagesRequired
     }
+  },
+
+  insertHtml: function () {
+    this.holder.html(this.html)
+  },
+
+  render: function () {
+    this.generateHtml()
+    this.insertHtml()
   },
 
   remove: function () {

@@ -10,17 +10,18 @@ function getTestGrid () {
     sammyPagination: true,
     gridItemHtml: function (item) {
       return $('<p>' + item + '</p>')
-    }
+    },
+    blankStateHtml: $('<p id="blank">There is nothing to display here!</p>')
   }, {
     
   })
 }
 
-test("drawing the grid view", function () {
+test("rendering the grid view", function () {
   TestGrid = getTestGrid()
   var collection = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
-  new TestGrid(collection).draw()
+  new TestGrid(collection).render()
 
   var $testGrid = $('.testing')
 
@@ -35,7 +36,7 @@ test("scrolling the grid view", function () {
   var collection = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
   testGrid = new TestGrid(collection)
-  testGrid.draw()
+  testGrid.render()
   var $testGrid = $('.testing')
 
   var pageChangeHasStarted = false
@@ -68,7 +69,7 @@ test("triggering an event when running low on collection items", function () {
   var collection = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
   testGrid = new TestGrid(collection, 'body')
-  testGrid.draw()
+  testGrid.render()
 
   var eventCounter = 0
 
@@ -94,7 +95,7 @@ test("removing the grid view", function () {
   var collection = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
   testGrid = new TestGrid(collection)
-  testGrid.draw()
+  testGrid.render()
   equal($('.testing').length, 1)
 
   testGrid.remove()
@@ -106,7 +107,7 @@ test("paginating the grid view", function () {
   var collection = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
   testGrid = new TestGrid(collection)
-  testGrid.draw()
+  testGrid.render()
 
   var $testGrid = $('.testing')
   var displayedPage = 1
@@ -128,4 +129,15 @@ test("paginating the grid view", function () {
 
   $testGrid.find('.grid-view-page-controls .forward').click()
   equal(displayedPage, 2, "clicking a page link should trigger the paginate event")
+})
+
+test("drawing a custom message when there are no items in the collection", function () {
+  TestGrid = getTestGrid()
+  var collection = []
+
+  new TestGrid(collection).render()
+
+  var $testGrid = $('.testing')
+
+  equal($('#blank').length, 1)
 })
