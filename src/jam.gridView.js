@@ -3,7 +3,12 @@ Jam.GridView = function (name, options, methods) {
   var name = name
   var options = options
 
-  var gridView = function (collection) {
+  var gridView = function (collection, eventHandlerSelector) {
+    if (eventHandlerSelector) {
+      this.eventHandler = $(eventHandlerSelector)
+    } else {
+      this.eventHandler = $(document)
+    };
     this.name = name
     this.collection = collection
     this.settings = $.extend(options, Jam.GridView.defaults)

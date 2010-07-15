@@ -1,0 +1,49 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>Jam Tests</title>
+    <!-- QUnit -->
+    <script src="lib/qunit.js"></script>
+    <link rel="stylesheet" href="lib/qunit.css" type="text/css" media="screen" />
+
+    <!-- Dependencies -->
+    <script src="lib/jquery.js"></script>
+
+    <!-- Jam -->
+    <script src="../src/jam-widgets.js"></script>
+    <script src="../src/jam.gridView.js"></script>
+    <script src="../src/jam.gridView.defaults.js"></script>
+    <script src="../src/jam.gridView.instanceMethods.js"></script>
+
+    <!-- Tests -->
+    <script src="widgets/test_grid_view.js"></script>
+
+    <style type="text/css" media="screen">
+      #templates {
+        display: none;
+      }
+    </style>
+
+    </head>
+
+  <body>
+    <h1 id="qunit-header">Jam Tests</h1>
+    <h2 id="qunit-banner"></h2>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+
+    <div id='grid-holder'></div>
+
+    <div id='templates'>
+      <div class='grid-container'>
+        <div class='grid-header'>
+          <h2>Hello</h2>
+        </div>
+        <div class='grid-view-port'>
+          <div class='grid-page-holder clearfix'></div>
+        </div>
+      </div>
+    </div>
+
+  </body>
+</html>
