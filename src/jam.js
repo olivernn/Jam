@@ -3,5 +3,7 @@
  *
  *  Released under MIT license.
  */
+
+//= require "jam-widgets.js"
 //= require "jam.gridView.js"
 //= require "jam.gridView.instanceMethods.js"

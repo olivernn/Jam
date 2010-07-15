@@ -1,30 +1,72 @@
 <html>
   <head>
+
+    <style type="text/css" media="screen">
+
+      .encoding-queue {
+        width: 820px;
+      }
+
+      .encoding-queue .grid-view-port {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .encoding-queue p {
+        font-size: 2em;
+        margin: 10px;
+        width: 360px;
+        height: 360px;
+        background-color: red;
+      }
+
+      .clearfix:after {
+        content: ".";
+        display: block;
+        height: 0;
+        clear: both;
+        visibility: hidden;
+      }
+      .clearfix {
+        zoom: 1;
+      }
+    </style>
+
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="lib/underscore.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="dist/jam-0.0.1.js" type="text/javascript" charset="utf-8"></script>
 
     <script type="text/javascript" charset="utf-8">
-      $(document).ready(function () {
-        EncodingQueue = GridView('encoding-queue', {
-          perPage: 2,
-          templateSelector: '#templates .grid-container',
-          holderSelector: '#grid-holder',
-          pageWidth: 700
-        }, {
-          drawBlankState: function () {
-            return console.log('sdfghj')
-          },
-
-          gridItemHTML: function (item) {
-            return '<p>' + item + '</p>'
-          }
-        })
-
-        encodingQueue = new EncodingQueue([1, 2, 3, 4])
+      EncodingQueue = Jam.GridView('encoding-queue', {
+        pageItems: 4,
+        pageWidth: '800px',
+        pageHeight: '800px',
+        paginationSpeed: 1000,
+        paginationEasing: 'swing',
+        templateSelector: '#templates .grid-container',
+        holderSelector: '#grid-holder',
+        gridItemHtml: function (item) {
+          return $('<p>' + item + '</p>')
+        }
+      }, {
+        hello: function () {
+          console.log('hello!')
+        }
       })
 
+      $(document).ready(function () {
+
+        encodingQueue = new EncodingQueue([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
+
+        // encodingQueue.draw()             -- draw the grid into the contianer
+        // encodingQueue.showPage(pageNum)  -- display pageNum page of the grid
+
+      })
     </script>
+
+
+
+
 
   </head>
   <body>
@@ -34,11 +76,11 @@
     <div id='templates'>
       <p>templates below</p>
       <div class='grid-container'>
-        <div class='header'>
+        <div class='grid-header'>
           <h2>Hello</h2>
         </div>
-        <div class='view-port'>
-          <div class='page-holder clearfix'></div>
+        <div class='grid-view-port'>
+          <div class='grid-page-holder clearfix'></div>
         </div>
       </div>
     </div>

@@ -1,20 +1,18 @@
-var GridView = function (name, options, instanceMethods) {
-
-  var instanceMethods =  instanceMethods || {}
+Jam.GridView = function (name, options, methods) {
+  var methods = methods || {}
+  var name = name
+  var options = options
 
   var gridView = function (collection) {
-    this.collection = collection || []
-    this.pagesRequired = Math.ceil(this.collection.length / this.perPage)
-    this.template = $(this.templateSelector)
-    this.holder = $(this.holderSelector)
-    this.html = this.template.clone(),
-    this.viewPort = this.html.find('.view-port'),
-    this.pageTemplate = $('<ul class="grid-page clearfix"></ul>'),
-    this.pageHolder = this.html.find('.page-holder'),
+    this.name = name
+    this.options = options
+    this.collection = collection
+    this.html = $(this.options.templateSelector).clone()
+    this.holder = $(this.options.holderSelector)
     this.page = 1
   }
 
-  $.extend(gridView.prototype, GridView.InstanceMethods, instanceMethods, options)
+  $.extend(gridView.prototype, Jam.GridView.instanceMethods, methods)
 
-  return gridView;
+  return gridView
 }

@@ -1,0 +1,87 @@
+.jam-grid-page-holder {
+  width: 10000px;
+  height: 750px;
+  position: relative;
+}
+
+.jam-grid-page-holder ul {
+  list-style: none;
+}
+
+.jam-grid-view-container {
+  width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
+}
+
+.jam-grid-view-header {
+  padding: 5px 10px;
+  border: 1px solid #9ab461;
+  background: #b3da62;
+  background: -moz-linear-gradient(-90deg, #b3da62, #8aa74a);
+  background: -webkit-gradient(linear, 0 top, 0 bottom, from(#B3DA62), to(#8AA74A));
+  -webkit-border-top-left-radius: 10px;
+  -webkit-border-top-right-radius: 10px;
+  -moz-border-radius-topleft: 10px;
+  -moz-border-radius-topright: 10px;
+}
+
+.jam-grid-view-header h2 {
+  color: white;
+  padding:0px;
+  margin:0px;
+}
+
+.jam-grid-view-port {
+  overflow: hidden;
+  border: 1px solid #eee;
+  -webkit-border-bottom-left-radius: 10px;
+  -webkit-border-bottom-right-radius: 10px;
+  -moz-border-radius-bottomleft: 10px;
+  -moz-border-radius-bottomright: 10px;
+  border-top: none;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  width: 800px;
+}
+
+.jam-grid-view-port .page-controls {
+  text-align: center;
+  font-size: 1.2em;
+  margin: 10px;
+}
+
+.jam-grid-view-port .page-link.current {
+  background-image:none;
+  color: #85B00A;
+}
+
+
+
+
+
+
+.grid-page p {
+  font-size: 2em;
+  margin: 10px;
+  width: 360px;
+  height: 360px;
+  background-color: red;
+  float:left;
+}
+
+.video-page {
+  width: 700px;
+  float: left;
+}
+
+h2.blank-state {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 250px;
+  font-size: 3em;
+  width: 500px;
+  text-align: center;
+}
+
