@@ -7,6 +7,7 @@ function getTestGrid () {
     pageHeight: '200px',
     templateSelector: '#templates .grid-container',
     holderSelector: '#grid-holder',
+    sammyPagination: true,
     gridItemHtml: function (item) {
       return $('<p>' + item + '</p>')
     }
@@ -37,11 +38,29 @@ test("scrolling the grid view", function () {
   testGrid.draw()
   var $testGrid = $('.testing')
 
+  var pageChangeHasStarted = false
+  var pageChangeHasEnded = false
+  var pageNum = 1
+
+  $(document)
+    .bind('pageAnimationStart.testing:gridView', function (e, newPage) {
+      pageChangeHasStarted = true
+      pageNum = newPage
+    })
+    .bind('pageAnimationEnd.testing:gridView', function () {
+      pageChangeHasEnded = true
+    })
+
+  ok(!pageChangeHasStarted)
+  ok(!pageChangeHasEnded)
+
   equal($testGrid.find('.grid-page-holder:animated').length, 0)
 
   testGrid.showPage(2)
+  equal(pageNum, 2)
+  ok(pageChangeHasStarted)
+  ok(!pageChangeHasEnded)
   equal($testGrid.find('.grid-page-holder:animated').length, 1)
-
 })
 
 test("triggering an event when running low on collection items", function () {
@@ -79,5 +98,34 @@ test("removing the grid view", function () {
   equal($('.testing').length, 1)
 
   testGrid.remove()
-  equal($('.testing').length, 0)
+  equal($('.testing').length, 0, "calling remove on the grid should remove it from the page")
+})
+
+test("paginating the grid view", function () {
+  TestGrid = getTestGrid()
+  var collection = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
+  testGrid = new TestGrid(collection)
+  testGrid.draw()
+
+  var $testGrid = $('.testing')
+  var displayedPage = 1
+
+  $(document).bind('paginate.testing:gridView', function (e, page) {
+    displayedPage = page
+  })
+
+  // the test grid is using sammy pagination so the urls will have meaning
+  equal($testGrid.find('.grid-view-page-controls').length, 1, "pagination controls should be drawn by default")
+  equal($testGrid.find('.grid-view-page-controls .current').text(), 1, "should be on the first page by default")
+  equal($testGrid.find('.grid-view-page-controls a').length, 5, "one for each page and one each for next and prev")
+  equal($testGrid.find('.grid-view-page-controls .backward').attr('href'), '#', "cannot page backwards when on the first page")
+
+  // the test grid will also fire events that can be bound to on pagination
+  $(document).bind('paginate.testing:gridView', function (e, page) {
+    displayedPage = page
+  })
+
+  $testGrid.find('.grid-view-page-controls .forward').click()
+  equal(displayedPage, 2, "clicking a page link should trigger the paginate event")
 })

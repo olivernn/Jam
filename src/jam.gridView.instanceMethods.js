@@ -1,7 +1,25 @@
 Jam.GridView.instanceMethods = {
+
+  // calculated whether this grid view can page backward
+  canPageBackward: function () {
+    return this.page > 1
+  },
+
+  // calculated whether this grid view can page forward
+  canPageForward: function () {
+    return this.page != this.pagesRequired
+  },
+
   // draws the grid view markup, containing the grid items, onto the page
   draw: function () {
     var self = this
+    for (var i=1; i <= pagesRequired(); i++) drawPage(i)
+    addStyles()
+    drawPaginationControls()
+    self.eventHandler.bind('pageAnimationEnd.' + this.eventNamespace, function () {
+      drawPaginationControls()
+    })
+    this.holder.html(this.html.addClass(this.name))
 
     // style the elements of the grid view to acheive the grid view effect
     function addStyles () {
@@ -42,15 +60,65 @@ Jam.GridView.instanceMethods = {
       self.html.find('.grid-page-holder').append(pageHtml)
     }
 
+    // draw controls to page through the collection
+    function drawPaginationControls () {
+
+      // generate the href for paging backwards
+      function pageNumHref (pageNum) {
+        if (self.settings.sammyPagination) {
+          return '#/' + self.name + '/page/' + pageNum
+        } else {
+          return '#'
+        };
+      }
+
+      // calculate the previous page number
+      function previousPageNum () {
+        return parseInt(self.page) - 1
+      }
+
+      // calculate the next page number
+      function nextPageNum () {
+        return parseInt(self.page) + 1
+      }
+
+      self.holder.find('.grid-view-page-controls').remove()
+
+      var pageControlsHtml = $('<div class="grid-view-page-controls"><a class="backward">Prev</a><a class="forward">Next</a></div>')
+      pageControlsHtml
+        .find('.backward')
+          .attr('href', self.canPageBackward() ? pageNumHref(previousPageNum()) : '#')
+          .click(function () {
+            if (self.canPageBackward) {
+              self.eventHandler.trigger('paginate.' + self.eventNamespace, previousPageNum())
+            };
+          })
+          .end()
+        .find('.forward')
+          .attr('href', self.canPageForward() ? pageNumHref(nextPageNum()) : '#')
+          .click(function () {
+            if (self.canPageForward()) {
+              self.eventHandler.trigger('paginate.' + self.eventNamespace, nextPageNum())
+            };
+          })
+
+      for (var i=1; i <= pagesRequired(); i++) {
+        var pageLink = $('<a class="page-link"></a>')
+        pageLink
+          .attr('href', pageNumHref(i))
+          .text(i)
+          .addClass(i == self.page ? 'current' : '')
+        pageControlsHtml.find('.forward').before(pageLink)
+      };
+
+      self.html.append(pageControlsHtml)
+    }
+
     // calculate how many pages are required for this collection to fit in this grid
     function pagesRequired () {
       self.pagesRequired = Math.ceil(self.collection.length / self.settings.pageItems)
       return self.pagesRequired
     }
-
-    for (var i=1; i <= pagesRequired(); i++) drawPage(i)
-    addStyles()
-    this.holder.html(this.html.addClass(this.name))
   },
 
   // remove this grid view from the page and unbind all its events
@@ -74,10 +142,19 @@ Jam.GridView.instanceMethods = {
       return -1 * ((pageNum - 1) * parseInt(self.settings.pageWidth)) + 'px'
     }
 
-    this.html.find('.grid-page-holder').animate({
-      left: pagePosition()
-    }, this.settings.paginationSpeed, this.settings.paginationEasing)
+    if (pageNum <= self.pagesRequired && pageNum > 0) {
+      this.page = pageNum
+      this.eventHandler.trigger('pageAnimationStart.' + this.eventNamespace, pageNum)
+      this.html.find('.grid-page-holder').animate({
+        left: pagePosition()
+      }, this.settings.paginationSpeed, this.settings.paginationEasing, function () {
+        self.eventHandler
+          .trigger('pageAnimationEnd.' + self.eventNamespace, pageNum)
+      })
 
-    if (moreCollectionItemsRequired()) this.eventHandler.trigger('collectionItemsNeeded.' + this.name + ':gridView')
+      if (moreCollectionItemsRequired()) this.eventHandler.trigger('collectionItemsNeeded.' + this.eventNamespace)      
+    } else {
+      throw("cannot show a page that doesn't exist")
+    };
   }
 }

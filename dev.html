@@ -41,10 +41,9 @@
         pageItems: 4,
         pageWidth: '800px',
         pageHeight: '800px',
-        paginationSpeed: 1000,
-        paginationEasing: 'swing',
         templateSelector: '#templates .grid-container',
         holderSelector: '#grid-holder',
+        sammyPagination: true,
         gridItemHtml: function (item) {
           return $('<p>' + item + '</p>')
         }
@@ -58,8 +57,12 @@
 
         encodingQueue = new EncodingQueue([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
 
-        // encodingQueue.draw()             -- draw the grid into the contianer
-        // encodingQueue.showPage(pageNum)  -- display pageNum page of the grid
+        // public api
+        // gridView.canPageBackward()  -- whether the grid view can be paged backward
+        // gridView.canPageForward()   -- whether the grid view can be paged forward
+        // gridView.draw()             -- draw the grid into the contianer
+        // gridView.showPage(pageNum)  -- display pageNum page of the grid
+        // gridView.remove()           -- remove this grid view
 
       })
     </script>
@@ -81,6 +84,7 @@
         </div>
         <div class='grid-view-port'>
           <div class='grid-page-holder clearfix'></div>
+          <div class='grid-view-page-controls'></div>
         </div>
       </div>
     </div>
