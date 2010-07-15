@@ -1,1 +1,3 @@
-Jam = {}
+Jam = {
+  version: '<%= VERSION %>'
+}

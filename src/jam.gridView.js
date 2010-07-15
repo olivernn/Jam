@@ -5,11 +5,11 @@ Jam.GridView = function (name, options, methods) {
 
   var gridView = function (collection) {
     this.name = name
-    this.options = options
     this.collection = collection
-    this.html = $(this.options.templateSelector).clone()
-    this.holder = $(this.options.holderSelector)
+    this.settings = $.extend(options, Jam.GridView.defaults)
     this.page = 1
+    this.html = $(this.settings.templateSelector).clone()
+    this.holder = $(this.settings.holderSelector)
   }
 
   $.extend(gridView.prototype, Jam.GridView.instanceMethods, methods)
