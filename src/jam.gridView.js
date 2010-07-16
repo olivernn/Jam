@@ -1,7 +1,6 @@
 Jam.GridView = function (name, options, methods) {
-  var methods = methods || {}
-  var name = name
-  var options = options
+  methods = methods || {}
+  options = options || {}
   var widget = 'gridView'
 
   var gridView = function (collection, eventHandlerSelector) {
@@ -13,10 +12,8 @@ Jam.GridView = function (name, options, methods) {
     this.eventNamespace = name + ':' + widget
     this.name = name
     this.collection = collection
-    this.settings = $.extend(Jam.GridView.defaults, options)
     this.page = 1
-    this.html = $(this.settings.templateSelector).clone()
-    this.holder = $(this.settings.holderSelector)
+    this.settings = options
   }
 
   $.extend(gridView.prototype, Jam.GridView.instanceMethods, methods)

@@ -13,6 +13,9 @@ Jam.GridView.instanceMethods = {
   // generates and returns the markup for the grid view and items
   generateHtml: function () {
     var self = this
+    $.extend(this.settings, Jam.GridView.defaults)
+    this.html = $(this.settings.templateSelector).clone()
+    this.holder = $(this.settings.holderSelector)
     var pageTemplate = $('<ul class="grid-view-page clearfix"></ul>')
     var gridItemWrap = $('<li class="grid-view-item"></li>').css({'float': 'left', 'display': 'inline'})
 
@@ -22,6 +25,7 @@ Jam.GridView.instanceMethods = {
       self.eventHandler.bind('pageAnimationStart.' + this.eventNamespace, function () {
         drawPaginationControls()
       })
+      displayCurrentPage()
     } else {
       drawBlankState()
     };
@@ -63,6 +67,13 @@ Jam.GridView.instanceMethods = {
       };
     }
 
+    // start the grid at the correct page
+    function displayCurrentPage () {
+      if (self.page > self.pagesRequired) self.page = self.pagesRequired
+      var position = -1 * ((self.page - 1) * parseInt(self.settings.pageWidth)) + 'px'
+      self.html.find('.grid-page-holder').css({'left': position})
+    }
+
     // generate html for a page
     function drawPage (pageNum) {
       var startIndex = (pageNum - 1) * self.settings.pageItems
@@ -100,34 +111,39 @@ Jam.GridView.instanceMethods = {
 
       self.holder.find('.grid-view-page-controls').remove()
 
-      var pageControlsHtml = $('<div class="grid-view-page-controls"><a class="page-link backward">Prev</a><a class="page-link forward">Next</a></div>')
-      pageControlsHtml
-        .find('.backward')
-          .attr('href', self.canPageBackward() ? pageNumHref(previousPageNum()) : '#')
-          .click(function () {
-            if (self.canPageBackward) {
-              self.eventHandler.trigger('paginate.' + self.eventNamespace, previousPageNum())
-            };
-          })
-          .end()
-        .find('.forward')
-          .attr('href', self.canPageForward() ? pageNumHref(nextPageNum()) : '#')
-          .click(function () {
-            if (self.canPageForward()) {
-              self.eventHandler.trigger('paginate.' + self.eventNamespace, nextPageNum())
-            };
-          })
+      if (self.pagesRequired > 1) {
+        var pageControlsHtml = $('<div class="grid-view-page-controls"><a class="page-link backward">Prev</a><a class="page-link forward">Next</a></div>')
+        pageControlsHtml
+          .find('.backward')
+            .attr('href', self.canPageBackward() ? pageNumHref(previousPageNum()) : '#')
+            .click(function () {
+              if (self.canPageBackward) {
+                self.eventHandler.trigger('paginate.' + self.eventNamespace, previousPageNum())
+              };
+            })
+            .end()
+          .find('.forward')
+            .attr('href', self.canPageForward() ? pageNumHref(nextPageNum()) : '#')
+            .click(function () {
+              if (self.canPageForward()) {
+                self.eventHandler.trigger('paginate.' + self.eventNamespace, nextPageNum())
+              };
+            })
 
-      for (var i=1; i <= pagesRequired(); i++) {
-        var pageLink = $('<a class="page-link"></a>')
-        pageLink
-          .attr('href', pageNumHref(i))
-          .text(i)
-          .addClass(i == self.page ? 'current' : '')
-        pageControlsHtml.find('.forward').before(pageLink)
+        for (var i=1; i <= pagesRequired(); i++) {
+          var pageLink = $('<a class="page-link"></a>')
+          pageLink
+            .attr('href', pageNumHref(i))
+            .text(i)
+            .addClass(i == self.page ? 'current' : '')
+            .click(function () {
+              self.eventHandler.trigger('paginate.' + self.eventNamespace, parseInt($(this).text()))
+            })
+          pageControlsHtml.find('.forward').before(pageLink)
+        };
+
+        self.html.append(pageControlsHtml)        
       };
-
-      self.html.append(pageControlsHtml)
     }
 
     // calculate how many pages are required for this collection to fit in this grid
@@ -145,7 +161,7 @@ Jam.GridView.instanceMethods = {
   // draws and then inserts the html for this template into the dom
   // overwrite this to do any pre or post processing to the markup
   // before entering it into the dom
-  render: function () {
+  render: function (collection) {
     this.generateHtml()
     // custom methods would be placed here to manipulate the generated html
     this.insertHtml()
@@ -186,5 +202,12 @@ Jam.GridView.instanceMethods = {
     } else {
       throw("cannot show a page that doesn't exist")
     };
+  },
+
+  // update the collection and redraw the pages based on the new collection
+  // this should keep the grid displaying the currently displayed grid
+  updateCollection: function (collection) {
+    this.collection = collection
+    this.render()
   }
 }

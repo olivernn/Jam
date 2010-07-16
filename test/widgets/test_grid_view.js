@@ -7,7 +7,7 @@ function getTestGrid () {
     pageHeight: '200px',
     templateSelector: '#templates .grid-container',
     holderSelector: '#grid-holder',
-    sammyPagination: true,
+    hashPagination: true,
     gridItemHtml: function (item) {
       return $('<p>' + item + '</p>')
     },
@@ -52,15 +52,12 @@ test("scrolling the grid view", function () {
       pageChangeHasEnded = true
     })
 
-  ok(!pageChangeHasStarted)
-  ok(!pageChangeHasEnded)
-
-  equal($testGrid.find('.grid-page-holder:animated').length, 0)
+  ok(!pageChangeHasStarted, "page animate events should only be triggered when animating between pages")
+  ok(!pageChangeHasEnded, "page animate events should only be triggered when animating between pages")
 
   testGrid.showPage(2)
-  equal(pageNum, 2)
-  ok(pageChangeHasStarted)
-  ok(!pageChangeHasEnded)
+  equal(pageNum, 2, "should be on the page passed to the showPage method")
+  ok(pageChangeHasStarted, "should have fired the page animation event when animating between pages")
   equal($testGrid.find('.grid-page-holder:animated').length, 1)
 })
 
@@ -129,6 +126,9 @@ test("paginating the grid view", function () {
 
   $testGrid.find('.grid-view-page-controls .forward').click()
   equal(displayedPage, 2, "clicking a page link should trigger the paginate event")
+
+  $testGrid.find('.grid-view-page-controls a:contains("1")').click()
+  equal(displayedPage, 1, "clicking an individual page should trigger the paginate event")
 })
 
 test("drawing a custom message when there are no items in the collection", function () {
@@ -140,4 +140,52 @@ test("drawing a custom message when there are no items in the collection", funct
   var $testGrid = $('.testing')
 
   equal($('#blank').length, 1)
+})
+
+test("multiple grid views on the same page can have different settings", function () {
+  TestGrid = getTestGrid()
+
+  AnotherGrid = Jam.GridView('another-grid', {
+    pageItem: 10,
+    pageWidth: '100px',
+    pageHeight: '100px',
+    templateSelector: '#templates .grid-container',
+    holderSelector: '#another-grid-holder',
+    pagination: false,
+    gridItemHtml: function (item) {
+      return $('<p>' + item + '</p>')
+    }
+  })
+
+  var coll1 = [1,2,3,4,5,6,7,8]
+  var coll2 = ["A","B","C","D","E","F"]
+
+  var testGrid = new TestGrid(coll1)
+  var anotherTestGrid = new AnotherGrid(coll2)
+
+  testGrid.render()
+  anotherTestGrid.render()
+
+  console.log(testGrid.settings, anotherTestGrid.settings)
+
+  ok(testGrid.settings !== anotherTestGrid.settings)
+})
+
+test("updating the grid view collection", function () {
+  TestGrid = getTestGrid()
+  var coll1 = [1,2,3,4,5,6,7,8,9,10]
+  var coll2 = ["A","B","C","D","E","F"]
+
+  var testGrid = new TestGrid(coll1)
+
+  testGrid.render()
+  testGrid.showPage(3)
+
+  equal(testGrid.pagesRequired, 3)
+  equal(testGrid.page, 3)
+
+  testGrid.updateCollection(coll2)
+
+  equal(testGrid.pagesRequired, 2)
+  equal(testGrid.page, 2)
 })
