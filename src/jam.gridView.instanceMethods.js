@@ -17,7 +17,7 @@ Jam.GridView.instanceMethods = {
     this.html = $(this.settings.templateSelector).clone()
     this.holder = $(this.settings.holderSelector)
     var pageTemplate = $('<ul class="grid-view-page clearfix"></ul>')
-    var gridItemWrap = $('<li class="grid-view-item"></li>').css({'float': 'left', 'display': 'inline'})
+    var gridItemWrap = $('<li class="grid-view-item"></li>').css({'float': 'left'})
 
     if (self.collection.length > 0) {
       for (var i=1; i <= pagesRequired(); i++) drawPage(i)      
