@@ -13,7 +13,7 @@ Jam.Base = function (name, options) {
 
   // bind a callback to an event on the objects event handler with the passed name and object namespace
   base.bind = function (eventName, callback) {
-    eventHandler.bind(eventName + eventNamespace(), callback);
+    eventHandler.bind(eventName + '.' + eventNamespace(), callback);
     return this;
   };
 
@@ -63,7 +63,7 @@ Jam.Base = function (name, options) {
 
   // trigger an event 
   base.trigger = function (eventName, data) {
-    eventHandler.trigger(eventName + eventNamespace(), data);
+    eventHandler.trigger(eventName + '.' + eventNamespace(), data);
   };
 
   return base;
