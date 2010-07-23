@@ -1,5 +1,9 @@
 Jam.GridView = function (name, options) {
-  var options = $.extend(options, {'widget': 'grid-view'})
+  var defaults = {
+    paginationSpeed: 800,
+    paginationEasing: 'swing'
+  }
+  var options = $.extend(defaults, options, {'widget': 'grid-view'})
   var gridView = Jam.newObjectFrom(Jam.CollectionView(name, options))
   var currentPage = 1
   var perPage = parseInt(options.perPage) || 1
