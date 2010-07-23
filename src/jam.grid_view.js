@@ -44,11 +44,7 @@ Jam.GridView = function (name, options) {
 
   var displayCurrentPage = function () {
     if (currentPage > pagesRequired()) { currentPage = pagesRequired() };
-  }
-
-  function displayCurrentPage () {
-    if (self.page > self.pagesRequired) self.page = self.pagesRequired
-    self.html.find('.grid-page-holder').css({'left': pagePosition(self.page)})
+    this.html.find('.grid-page-holder').css({'left': pagePosition(currentPage)})
   }
 
   var drawBlankState = function () {
@@ -71,7 +67,7 @@ Jam.GridView = function (name, options) {
       })));
     });
 
-    gridView.html.find('.grid-page-holder').append(pageHtml);
+    this.html.find('.grid-page-holder').append(pageHtml);
   }
 
   var drawPaginationControls = function () {
@@ -101,7 +97,6 @@ Jam.GridView = function (name, options) {
 
   gridView.generateHtml = function () {
     var self = this;
-
     if (this.collectionIsEmpty()) {
       drawBlankState();
     } else {
@@ -110,7 +105,7 @@ Jam.GridView = function (name, options) {
       };
       this.bind('pageAnimateStart', function () { drawPaginationControls() });
       drawPaginationControls();
-      displayCurrentPage();
+      displayCurrentPage.call(this);
     };
 
     addStyles.call(this);
@@ -119,7 +114,6 @@ Jam.GridView = function (name, options) {
 
   gridView.showPage = function (pageNum) {
     var self = this
-    console.log(options)
     if (pageNum <= pagesRequired() && pageNum > 0) {
       currentPage = pageNum;
       this.trigger('pageAnimationStart', pageNum);

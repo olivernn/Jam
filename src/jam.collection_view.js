@@ -21,15 +21,11 @@ Jam.CollectionView = function (name, options) {
     return collection;
   };
 
-  collectionView.updateCollection = function () {
-    if (arguments.length === 1) {
-      collection = collection.concat(arguments);
-    } else {
-      $.each(arguments, function () {
-        collection.push(this);
-      });
-    };
+  collectionView.updateCollection = function (newCollection) {
+    collection = newCollection
     this.trigger('collectionUpdated', collection);
+    this.resetHtml()
+    this.render()
     return collection;
   };
 
