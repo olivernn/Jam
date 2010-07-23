@@ -36,7 +36,7 @@ Jam.Base = function (name, options) {
 
   // insert the objects html into the dom
   base.insertHtml = function () {
-    this.container().append(this.html);
+    this.container().html(this.html);
   };
 
   // generates the html for this object and inserts it into its container
@@ -55,6 +55,11 @@ Jam.Base = function (name, options) {
     this.html.remove();
     eventHandler.unbind(this.name + ':gridView')
   };
+
+  // reload the html from the template
+  base.resetHtml = function () {
+    this.html = template.clone()
+  }
 
   // trigger an event 
   base.trigger = function (eventName, data) {
