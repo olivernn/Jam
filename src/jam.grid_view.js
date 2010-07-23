@@ -9,6 +9,7 @@ Jam.GridView = function (name, options) {
   var perPage = parseInt(options.perPage) || 1
   var self = this
   var pageTemplate = $('<ul class="grid-view-page clearfix"></ul>')
+  var pageControlsTemplate = $('<div class="grid-view-page-controls"><a href="#" class="page-link backward">Prev</a><a href="#" class="page-link forward">Next</a></div>')
   var gridItemWrap = $('<li class="grid-view-item"></li>').css({
     'float': 'left',
     'width': (parseInt(options.pageWidth) / options.grid['x']) + 'px'
@@ -44,15 +45,15 @@ Jam.GridView = function (name, options) {
 
   var displayCurrentPage = function () {
     if (currentPage > pagesRequired()) { currentPage = pagesRequired() };
-    this.html.find('.grid-page-holder').css({'left': pagePosition(currentPage)})
-  }
+    this.html.find('.grid-page-holder').css({'left': pagePosition(currentPage)});
+  };
 
   var drawBlankState = function () {
     if (options.blankStateHtml) {
       this.html.find('.grid-page-holder')
         .append(pageTemplate.clone().append(options.blankStateHtml));
     };
-  }
+  };
 
   var drawPage = function (pageNum) {
     var startIndex = (pageNum - 1) * options.perPage;
@@ -71,11 +72,46 @@ Jam.GridView = function (name, options) {
   }
 
   var drawPaginationControls = function () {
-    
+    var self = this
+    // this.html.find('.grid-view-page-controls').remove();
+    if (pagesRequired() > 1) {
+      var controlsHtml = pageControlsTemplate.clone()
+      controlsHtml
+        .find('.backward')
+          .click(function () {
+            if (self.canPageBackward()) {
+              self.trigger('paginate', previousPageNum())
+            };
+          })
+          .end()
+        .find('.forward')
+          .click(function () {
+            if (self.canPageForward()) {
+              self.trigger('paginate', nextPageNum())
+            };
+          })
+
+      for (var i=1; i <= pagesRequired(); i++) {
+        var pageLink = $('<a href="#" class="page-link"></a>')
+        pageLink
+          .text(i)
+          .addClass(i == currentPage ? 'current' : '')
+          .click(function () {
+            self.trigger('paginate', parseInt($(this).text()))
+          })
+        controlsHtml.find('.forward').before(pageLink)
+      };
+
+      this.html.append(controlsHtml)
+    };
   }
 
   var moreCollectionItemsRequired = function (pageNum) {
     return pageNum >= (pagesRequired() - 1);
+  };
+
+  var nextPageNum = function () {
+    return parseInt(currentPage) + 1;
   };
 
   var pagesRequired = function () {
@@ -87,14 +123,22 @@ Jam.GridView = function (name, options) {
     return position
   };
 
-  gridView.canPageBack = function () {
+  var previousPageNum = function () {
+    return parseInt(currentPage) - 1;
+  };
+
+  // determines whether the grid can be paged backwards
+  gridView.canPageBackward = function () {
     return currentPage > 1;
   };
 
+  // determines whether the grid can be paged forwards
   gridView.canPageForward = function () {
     return currentPage !== pagesRequired();
   };
 
+  // generates the html for the grid view, overriding the generateHtml method
+  // defined in base
   gridView.generateHtml = function () {
     var self = this;
     if (this.collectionIsEmpty()) {
@@ -103,15 +147,18 @@ Jam.GridView = function (name, options) {
       for (var i=1; i <= pagesRequired(); i++) {
         drawPage.call(this, i);
       };
-      this.bind('pageAnimateStart', function () { drawPaginationControls() });
-      drawPaginationControls();
+      this.bind('pageAnimateStart', function () { drawPaginationControls.call(this) });
+      drawPaginationControls.call(this);
       displayCurrentPage.call(this);
     };
+
+    this.bind('paginate', function (e, p) { self.showPage(p) })
 
     addStyles.call(this);
     return this.html.addClass(this.htmlClass());
   }
 
+  // scroll the grid to show the page number passed in as an argument
   gridView.showPage = function (pageNum) {
     var self = this
     if (pageNum <= pagesRequired() && pageNum > 0) {
