@@ -63,12 +63,3 @@ Jam.Base = function (name, options) {
 
   return base;
 }
-// 
-// 
-// Blah = function (collection) {
-//   var blah = {}
-// 
-//   $.extend(blah, new Jam.NewGridView({collection: collection, containerSelector: '#grid-holder', templateSelector: '#templates .test'}))
-// 
-//   return blah
-// }
