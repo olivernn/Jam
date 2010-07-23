@@ -44,8 +44,7 @@ Jam.GridView = function (name, options) {
 
   function displayCurrentPage () {
     if (self.page > self.pagesRequired) self.page = self.pagesRequired
-    var position = -1 * ((self.page - 1) * parseInt(self.settings.pageWidth)) + 'px'
-    self.html.find('.grid-page-holder').css({'left': position})
+    self.html.find('.grid-page-holder').css({'left': pagePosition(self.page)})
   }
 
   var drawBlankState = function () {
@@ -75,13 +74,17 @@ Jam.GridView = function (name, options) {
     
   }
 
+  var moreCollectionItemsRequired = function (pageNum) {
+    return pageNum >= (pagesRequired() - 1);
+  };
+
   var pagesRequired = function () {
     return Math.ceil(gridView.collection().length / perPage);
   };
 
-  var pagePosition = function () {
-    var position = -1 * ((currentPage - 1) * parseInt(options.pageWidth)) + 'px';
-    this.html.find('.grid-page-holder').css({'left': position});
+  var pagePosition = function (pageNum) {
+    var position = -1 * ((pageNum - 1) * parseInt(options.pageWidth)) + 'px';
+    return position
   };
 
   gridView.canPageBack = function () {
@@ -109,6 +112,25 @@ Jam.GridView = function (name, options) {
     addStyles.call(this);
     return this.html.addClass(this.htmlClass());
   }
+
+  gridView.showPage = function (pageNum) {
+    var self = this
+    console.log(options)
+    if (pageNum <= pagesRequired() && pageNum > 0) {
+      currentPage = pageNum;
+      this.trigger('pageAnimationStart', pageNum);
+      this.html.find('.grid-page-holder').animate({
+        left: pagePosition(pageNum)
+      }, options.paginationSpeed, options.paginationEasing, function () {
+        self.trigger('pageAnimationEnd', pageNum);
+      });
+      if (moreCollectionItemsRequired()) {
+        self.trigger('collectionItemsNeeded');
+      };
+    } else {
+      throw("cannot show a page that doesn't exist");
+    };
+  };
 
   return gridView;
 }
