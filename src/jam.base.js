@@ -27,7 +27,7 @@ Jam.Base = function (name, options) {
     return $(containerSelector);
   };
 
-  // generate the html for the object
+  // generate the html for the object, this should be overriden
   base.generateHtml = function () {
     return this.html;
   };
@@ -53,7 +53,7 @@ Jam.Base = function (name, options) {
   // remove the objects html from the dom and unbind all events
   base.remove = function () {
     this.html.remove();
-    eventHandler.unbind(this.name + ':gridView')
+    eventHandler.unbind('.' + eventNamespace())
   };
 
   // reload the html from the template

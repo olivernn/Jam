@@ -137,12 +137,16 @@ Jam.GridView = function (name, options) {
     return currentPage !== pagesRequired();
   };
 
+  gridView.currentPage = function () {
+    return currentPage
+  }
+
   // generates the html for the grid view, overriding the generateHtml method
   // defined in base
   gridView.generateHtml = function () {
     var self = this;
     if (this.collectionIsEmpty()) {
-      drawBlankState();
+      drawBlankState.call(this);
     } else {
       for (var i=1; i <= pagesRequired(); i++) {
         drawPage.call(this, i);
@@ -169,7 +173,7 @@ Jam.GridView = function (name, options) {
       }, options.paginationSpeed, options.paginationEasing, function () {
         self.trigger('pageAnimationEnd', pageNum);
       });
-      if (moreCollectionItemsRequired()) {
+      if (moreCollectionItemsRequired(pageNum)) {
         self.trigger('collectionItemsNeeded');
       };
     } else {

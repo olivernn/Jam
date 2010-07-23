@@ -36,40 +36,39 @@
     <script src="lib/underscore.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="dist/jam-0.0.1.js" type="text/javascript" charset="utf-8"></script>
 
-    <script type="text/javascript" charset="utf-8">
-      EncodingQueue = Jam.GridView('encoding-queue', {
-        pageItems: 4,
-        pageWidth: '800px',
-        pageHeight: '800px',
-        templateSelector: '#templates .grid-container',
-        holderSelector: '#grid-holder',
-        sammyPagination: true,
-        gridItemHtml: function (item) {
-          return $('<p>' + item + '</p>')
-        }
-      }, {
-        hello: function () {
-          console.log('hello!')
-        }
-      })
 
+    <script src="src/jam-widgets.js" type="text/javascript" charset="utf-8"></script>
+    <script src="src/jam.base.js" type="text/javascript" charset="utf-8"></script>
+    <script src="src/jam.collection_view.js" type="text/javascript" charset="utf-8"></script>
+    <script src="src/jam.grid_view.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="src/test.js" type="text/javascript" charset="utf-8"></script>
+
+    <script type="text/javascript" charset="utf-8">
       $(document).ready(function () {
 
-        encodingQueue = new EncodingQueue([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
+        VideoGrid = function (collection) {
+          videoGrid = Jam.newObjectFrom(Jam.GridView('video-grid', {
+            perPage: 4,
+            grid: { x: 2, y: 2},
+            pageWidth: '800px',
+            pageHeight: '100px',
+            collection: collection,
+            containerSelector: '#grid-holder',
+            templateSelector: '#templates .grid-container',
+            gridItemHtml: function (item) {
+              return $('<p>' + item + '</p>')
+            }
+          }))
 
-        // public api
-        // gridView.canPageBackward()  -- whether the grid view can be paged backward
-        // gridView.canPageForward()   -- whether the grid view can be paged forward
-        // gridView.draw()             -- draw the grid into the contianer
-        // gridView.showPage(pageNum)  -- display pageNum page of the grid
-        // gridView.remove()           -- remove this grid view
+          videoGrid.hello = function () {
+            return 'hello there'
+          }
 
+          return videoGrid
+        }
       })
     </script>
-
-
-
-
 
   </head>
   <body>
@@ -77,6 +76,7 @@
     <div id='grid-holder'></div>
 
     <div id='templates'>
+      <p class='test'></p>
       <p>templates below</p>
       <div class='grid-container'>
         <div class='grid-header'>
