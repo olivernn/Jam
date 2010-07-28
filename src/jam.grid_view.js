@@ -10,9 +10,10 @@ Jam.GridView = function (name, options) {
   var self = this
   var pageTemplate = $('<ul class="grid-view-page clearfix"></ul>')
   var pageControlsTemplate = $('<div class="grid-view-page-controls"><a href="#" class="page-link backward">Prev</a><a href="#" class="page-link forward">Next</a></div>')
+  var girdItemWidth = parseInt(gridView.options().pageWidth) / gridView.options().gridWidth + 'px'
   var gridItemWrap = $('<li class="grid-view-item"></li>').css({
     'float': 'left',
-    'width': (parseInt(options.pageWidth) / options.grid['x']) + 'px'
+    'width': girdItemWidth
   })
 
   var addStyles = function () {
