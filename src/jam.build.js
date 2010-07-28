@@ -4,7 +4,8 @@
  *  Released under MIT license.
  */
 
-//= require "jam-widgets.js"
-//= require "jam.gridView.js"
-//= require "jam.gridView.instanceMethods.js"
-//= require "jam.gridView.defaults.js"
+//= require "jam.js"
+//= require "jam.base.js"
+//= require "jam.collection_view.js"
+//= require "jam.grid_view.js"
+//= require "jam.helper.js"

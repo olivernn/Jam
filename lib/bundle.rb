@@ -12,7 +12,7 @@ class Bundle
   attr_reader :path
 
   def initialize
-    @path = "#{SRC_DIR}/jam.js"
+    @path = "#{SRC_DIR}/jam.build.js"
   end
 
   def bundle!
