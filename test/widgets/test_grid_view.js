@@ -3,7 +3,7 @@ module("Grid View")
   TestGrid = function (collection) {
     testGrid = Jam.newObjectFrom(Jam.GridView('test-grid', {
       perPage: 4,
-      grid: { x: 2, y: 2},
+      gridWidth: 2,
       pageWidth: '200px',
       pageHeight: '200px',
       collection: collection,
@@ -25,7 +25,7 @@ module("Grid View")
   AnotherGrid = function (collection) {
     anotherGrid = Jam.newObjectFrom(Jam.GridView('another-grid', {
       perPage: 4,
-      grid: { x: 2, y: 2},
+      gridWidth: 2,
       pageWidth: '200px',
       pageHeight: '200px',
       collection: collection,
