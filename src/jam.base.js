@@ -39,6 +39,10 @@ Jam.Base = function (name, options) {
     this.container().html(this.html);
   };
 
+  base.options = function () {
+    return options
+  }
+
   // generates the html for this object and inserts it into its container
   // a customization function can be passed which will be called after generating
   // the markup and before it is inserted into the dom, 
