@@ -13,3 +13,11 @@ test('millieseconds to hours minutes and seconds', function () {
   equals(Jam.Helper.millisecondsToHrsMinSec(180000), "3:00")
   equals(Jam.Helper.millisecondsToHrsMinSec(30000), "0:30")
 })
+
+test("displaying numbers as currency", function () {
+  equals(Jam.Helper.numberToCurrency(2), "£2.00")
+  equals(Jam.Helper.numberToCurrency(2.1), "£2.10")
+  equals(Jam.Helper.numberToCurrency(2.11), "£2.11")
+  equals(Jam.Helper.numberToCurrency(2.111), "£2.11")
+  equals(Jam.Helper.numberToCurrency(2.111, { currency: "$"}), "$2.11")
+})

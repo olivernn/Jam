@@ -14,6 +14,12 @@ Jam.Helper = (function ($) {
     return ((h > 0 ? h + ":" : "") + (m > 0 ? (h > 0 && m < 10 ? "0" : "") + m + ":" : "0:") + (s < 10 ? "0" : "") + s);
   },
 
+  // convert any number to a currency, e.g. 2 -> £2.00
+  h.numberToCurrency = function (number, options) {
+    var settings = $.extend({}, { currency: '£' }, options || {})
+    return settings.currency + number.toFixed(2)
+  },
+
   // calculate the left offset to position the element centrally on the x axis 
   h.pageCentreX = function (elementWidth) {
     var pageWidth = $('body').width()
