@@ -20,4 +20,7 @@ test("displaying numbers as currency", function () {
   equals(Jam.Helper.numberToCurrency(2.11), "£2.11")
   equals(Jam.Helper.numberToCurrency(2.111), "£2.11")
   equals(Jam.Helper.numberToCurrency(2.111, { currency: "$"}), "$2.11")
+
+  // should still work even if a string representation of a number is passed
+  equals(Jam.Helper.numberToCurrency("2.111"), "£2.11")
 })

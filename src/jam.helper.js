@@ -17,7 +17,7 @@ Jam.Helper = (function ($) {
   // convert any number to a currency, e.g. 2 -> £2.00
   h.numberToCurrency = function (number, options) {
     var settings = $.extend({}, { currency: '£' }, options || {})
-    return settings.currency + number.toFixed(2)
+    return settings.currency + new Number(number).toFixed(2)
   },
 
   // calculate the left offset to position the element centrally on the x axis 
