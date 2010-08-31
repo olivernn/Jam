@@ -149,9 +149,11 @@ test("paginating the grid view", function () {
 
   $testGrid.find('.grid-view-page-controls .forward').click()
   equal(displayedPage, 2, "clicking a page link should trigger the paginate event")
+  equal($testGrid.find('.current').text(), "2", "the current page's link should be highlighted with the class current")
 
   $testGrid.find('.grid-view-page-controls a:contains("1")').click()
   equal(displayedPage, 1, "clicking an individual page should trigger the paginate event")
+  equal($testGrid.find('.current').text(), "1", "the current page's link should be highlighted with the class current")
 
 })
 

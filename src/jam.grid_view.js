@@ -83,6 +83,7 @@ Jam.GridView = function (name, options) {
             if (self.canPageBackward()) {
               self.trigger('paginate', previousPageNum())
             };
+            return false;
           })
           .end()
         .find('.forward')
@@ -90,6 +91,7 @@ Jam.GridView = function (name, options) {
             if (self.canPageForward()) {
               self.trigger('paginate', nextPageNum())
             };
+            return false;
           })
 
       for (var i=1; i <= pagesRequired(); i++) {
@@ -99,6 +101,7 @@ Jam.GridView = function (name, options) {
           .addClass(i == currentPage ? 'current' : '')
           .click(function () {
             self.trigger('paginate', parseInt($(this).text()))
+            return false;
           })
         controlsHtml.find('.forward').before(pageLink)
       };
@@ -157,7 +160,15 @@ Jam.GridView = function (name, options) {
       displayCurrentPage.call(this);
     };
 
-    this.bind('paginate', function (e, p) { self.showPage(p) })
+    this.bind('paginate', function (e, p) {
+      self.html.find('.grid-view-page-controls')
+        .find('a')
+          .removeClass('current')
+        .end()
+        .find('a:contains(' + p + ')')
+          .addClass('current')
+      self.showPage(p) 
+    })
 
     addStyles.call(this);
     return this.html.addClass(this.htmlClass());
