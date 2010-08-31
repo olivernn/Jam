@@ -12,7 +12,6 @@ Jam.CollectionView = function (name, options) {
     return collection;
   }
 
-  // 
   collectionView.emptyCollection = function () {
     collection = [];
     this.trigger('collectionEmptied')

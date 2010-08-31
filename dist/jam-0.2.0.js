@@ -25,20 +25,26 @@ Jam.Base = function (name, options) {
     return name + ':' + widget;
   };
 
+  var populate = function () {
+
+  };
+
   base.bind = function (eventName, callback) {
-    eventHandler.bind(eventName + '.' + eventNamespace(), callback);
+    eventHandler.bind(eventName + ':' + eventNamespace(), callback);
     return this;
   };
 
   base.htmlClass = function (className) {
     return name + ' ' + widget + '-' + className;
-  }
+  };
 
   base.container = function () {
     return $(containerSelector);
   };
 
   base.generateHtml = function () {
+    populate.call(this);
+    addBehaviour.call(this);
     return this.html;
   };
 
@@ -49,32 +55,29 @@ Jam.Base = function (name, options) {
   };
 
   base.options = function () {
-    return options
-  }
+    return options;
+  };
 
-  base.render = function (customization) {
-    var customization = customization || function () {};
-
+  base.render = function () {
     this.generateHtml();
-    customization.call(this);
     this.insertHtml();
   };
 
   base.remove = function () {
     this.html.remove();
-    eventHandler.unbind('.' + eventNamespace())
+    eventHandler.unbind(':' + eventNamespace());
   };
 
   base.resetHtml = function () {
-    this.html = template.clone()
-  }
+    this.html = template.clone();
+  };
 
   base.trigger = function (eventName, data) {
-    eventHandler.trigger(eventName + '.' + eventNamespace(), data);
+    eventHandler.trigger(eventName + ':' + eventNamespace(), data);
   };
 
   return base;
-}
+};
 Jam.CollectionView = function (name, options) {
   var collectionView = Jam.newObjectFrom(Jam.Base(name, options));
   var collection = options.collection || []
@@ -336,6 +339,23 @@ Jam.Helper = (function ($) {
       day_diff == 1 && "yesterday" ||
       day_diff < 7 && day_diff + " days ago" ||
       day_diff < 31 && Math.ceil( day_diff / 7 ) + " weeks ago";
+  },
+
+  h.truncateText = function (string, len) {
+    var i = 0;
+    var len = len || 100;
+    var string = string || "";
+
+    if (string.length <= len) {
+      return string;
+    } else if (string[len] !== ' ') {
+      while (string[len + i] !== ' ') {
+        i++;
+      };
+      return string.slice(0, len + i) + '…';
+    } else {
+      return string.slice(0, len) + '…';
+    };
   },
 
   h.viewPortTop = function (offset) {

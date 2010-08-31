@@ -27,8 +27,14 @@ var Person = function (name) {
 var Ninja = function (beltColor, name) {
   var ninja = newObjectFrom(Person(name))
   var beltColor = beltColor
+  var counter = 0
+
+  ninja.kickCount = function () {
+    return counter
+  }
 
   ninja.kick = function () {
+    counter++
     return 'ninja kick!'
   }
 

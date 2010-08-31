@@ -24,3 +24,11 @@ test("displaying numbers as currency", function () {
   // should still work even if a string representation of a number is passed
   equals(Jam.Helper.numberToCurrency("2.111"), "£2.11")
 })
+
+test("truncating text to a specific length", function () {
+  var testString = "The quick brown fox jumped over the lazy dog"
+  equals(Jam.Helper.truncateText(testString, 9), "The quick…")
+  equals(Jam.Helper.truncateText(testString, 12), "The quick brown…")
+  equals(Jam.Helper.truncateText(testString, 50), testString)
+  equals(Jam.Helper.truncateText(undefined, 100), "")
+})

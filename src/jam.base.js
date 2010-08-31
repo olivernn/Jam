@@ -11,24 +11,32 @@ Jam.Base = function (name, options) {
     return name + ':' + widget;
   };
 
+  // populate the blank html fragment, should be overriden
+  var populate = function () {
+    
+  };
+
   // bind a callback to an event on the objects event handler with the passed name and object namespace
   base.bind = function (eventName, callback) {
-    eventHandler.bind(eventName + '.' + eventNamespace(), callback);
+    eventHandler.bind(eventName + ':' + eventNamespace(), callback);
     return this;
   };
 
   // return a namespaced class to be used on the objects markup
   base.htmlClass = function (className) {
     return name + ' ' + widget + '-' + className;
-  }
+  };
 
   // select the container for this objects html
   base.container = function () {
     return $(containerSelector);
   };
 
-  // generate the html for the object, this should be overriden
+  // generate the html for the object, calls populate and addBehaviour methods which
+  // should be overriden to customize the appearance and behaviour of the view
   base.generateHtml = function () {
+    populate.call(this);
+    addBehaviour.call(this);
     return this.html;
   };
 
@@ -40,35 +48,30 @@ Jam.Base = function (name, options) {
   };
 
   base.options = function () {
-    return options
-  }
+    return options;
+  };
 
   // generates the html for this object and inserts it into its container
-  // a customization function can be passed which will be called after generating
-  // the markup and before it is inserted into the dom, 
-  base.render = function (customization) {
-    var customization = customization || function () {};
-
+  base.render = function () {
     this.generateHtml();
-    customization.call(this);
     this.insertHtml();
   };
 
   // remove the objects html from the dom and unbind all events
   base.remove = function () {
     this.html.remove();
-    eventHandler.unbind('.' + eventNamespace())
+    eventHandler.unbind(':' + eventNamespace());
   };
 
   // reload the html from the template
   base.resetHtml = function () {
-    this.html = template.clone()
-  }
+    this.html = template.clone();
+  };
 
   // trigger an event 
   base.trigger = function (eventName, data) {
-    eventHandler.trigger(eventName + '.' + eventNamespace(), data);
+    eventHandler.trigger(eventName + ':' + eventNamespace(), data);
   };
 
   return base;
-}
+};

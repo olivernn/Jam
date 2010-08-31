@@ -52,6 +52,24 @@ Jam.Helper = (function ($) {
       day_diff < 31 && Math.ceil( day_diff / 7 ) + " weeks ago";
   },
 
+  // truncates the passed text to the specified length without breaking words
+  h.truncateText = function (string, len) {
+    var i = 0;
+    var len = len || 100;
+    var string = string || "";
+
+    if (string.length <= len) {
+      return string;
+    } else if (string[len] !== ' ') {
+      while (string[len + i] !== ' ') {
+        i++;
+      };
+      return string.slice(0, len + i) + '…';
+    } else {
+      return string.slice(0, len) + '…';
+    };
+  },
+
   h.viewPortTop = function (offset) {
     return $('body').scrollTop() + offset
   }

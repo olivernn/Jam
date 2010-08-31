@@ -2,7 +2,6 @@
   <head>
 
     <style type="text/css" media="screen">
-
       .encoding-queue {
         width: 820px;
       }
@@ -37,20 +36,71 @@
     <script src="dist/jam-0.0.1.js" type="text/javascript" charset="utf-8"></script>
 
 
-    <script src="src/jam-widgets.js" type="text/javascript" charset="utf-8"></script>
+    <script src="src/jam.js" type="text/javascript" charset="utf-8"></script>
     <script src="src/jam.base.js" type="text/javascript" charset="utf-8"></script>
+    <script src="src/jam.helper.js" type="text/javascript" charset="utf-8"></script>
+    <script src="src/jam.css3.js" type="text/javascript" charset="utf-8"></script>
     <script src="src/jam.collection_view.js" type="text/javascript" charset="utf-8"></script>
     <script src="src/jam.grid_view.js" type="text/javascript" charset="utf-8"></script>
+    <script src="src/jam.stack_view.js" type="text/javascript" charset="utf-8"></script>
+    <script src="src/jam.member_view.js" type="text/javascript" charset="utf-8"></script>
 
     <script src="src/test.js" type="text/javascript" charset="utf-8"></script>
 
     <script type="text/javascript" charset="utf-8">
       $(document).ready(function () {
 
+        bob = { name: 'bob', age: 100, likes: 'long walks on the beach', sex: 'm'}
+
+        PersonView = function (person) {
+          var personView = Jam.newObjectFrom(Jam.MemberView('person-view', person, {
+            templateSelector: '#templates .person'
+          }))
+
+          personView.populate = function () {
+            this.html
+              .addClass(person.sex === 'm' ? 'male' : 'female')
+              .find('h2')
+                .text(person.name)
+              .end()
+              .find('.age')
+                .text(person.age)
+              .end()
+              .find('.likes')
+                .text(person.likes)
+          }
+
+          return personView
+        }
+
+        TestStack = function (collection) {
+          var testStack = Jam.newObjectFrom(Jam.StackView('test-stack', {
+            collection: collection,
+            containerSelector: '#stack-holder',
+            templateSelector: '#templates .stack-container',
+            width: '200px',
+            height: '200px',
+            stackItemHtml: function (item) {
+              return $('<p>' + item + '</p>').css({
+                'width': '100px',
+                'height': '100px',
+                'background-color': 'red',
+                'border': '1px solid black'
+              })
+            }
+          }))
+
+          testStack.hello = function () {
+            return 'hello there'
+          }
+
+          return testStack
+        }
+
         VideoGrid = function (collection) {
-          videoGrid = Jam.newObjectFrom(Jam.GridView('video-grid', {
+          var videoGrid = Jam.newObjectFrom(Jam.GridView('video-grid', {
             perPage: 4,
-            grid: { x: 2, y: 2},
+            gridWidth: 2,
             pageWidth: '800px',
             pageHeight: '100px',
             collection: collection,
@@ -68,16 +118,27 @@
           return videoGrid
         }
       })
+
+      var collection = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
     </script>
 
   </head>
   <body>
 
     <div id='grid-holder'></div>
+    <div id='stack-holder'></div>
 
     <div id='templates'>
       <p class='test'></p>
       <p>templates below</p>
+      <div class='person'>
+        <h2></h2>
+        <p class='age'></p>
+        <p class='likes'></p>
+      </div>
+
+      <div class='stack-container'></div>
+
       <div class='grid-container'>
         <div class='grid-header'>
           <h2>Hello</h2>
