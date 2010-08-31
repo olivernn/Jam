@@ -30,7 +30,7 @@ Jam.Base = function (name, options) {
   };
 
   base.bind = function (eventName, callback) {
-    eventHandler.bind(eventName + ':' + eventNamespace(), callback);
+    eventHandler.bind(eventName + '.' + eventNamespace(), callback);
     return this;
   };
 
@@ -65,7 +65,7 @@ Jam.Base = function (name, options) {
 
   base.remove = function () {
     this.html.remove();
-    eventHandler.unbind(':' + eventNamespace());
+    eventHandler.unbind('.' + eventNamespace());
   };
 
   base.resetHtml = function () {
@@ -73,7 +73,7 @@ Jam.Base = function (name, options) {
   };
 
   base.trigger = function (eventName, data) {
-    eventHandler.trigger(eventName + ':' + eventNamespace(), data);
+    eventHandler.trigger(eventName + '.' + eventNamespace(), data);
   };
 
   return base;
