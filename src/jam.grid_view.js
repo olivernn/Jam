@@ -74,40 +74,46 @@ Jam.GridView = function (name, options) {
 
   var drawPaginationControls = function () {
     var self = this
-    // this.html.find('.grid-view-page-controls').remove();
-    if (pagesRequired() > 1) {
-      var controlsHtml = pageControlsTemplate.clone()
-      controlsHtml
-        .find('.backward')
-          .click(function () {
-            if (self.canPageBackward()) {
-              self.trigger('paginate', previousPageNum())
-            };
-            return false;
-          })
-          .end()
-        .find('.forward')
-          .click(function () {
-            if (self.canPageForward()) {
-              self.trigger('paginate', nextPageNum())
-            };
-            return false;
-          })
+    var controlsHtml = this.html.find('.grid-view-page-controls')
 
+    if (controlsHtml.length > 0) {
+      controlsHtml.remove()
+    };
+
+    if (pagesRequired() > 1) {
+      controlsHtml = pageControlsTemplate.clone()
       for (var i=1; i <= pagesRequired(); i++) {
         var pageLink = $('<a href="#" class="page-link"></a>')
         pageLink
           .text(i)
           .addClass(i == currentPage ? 'current' : '')
-          .click(function () {
-            self.trigger('paginate', parseInt($(this).text()))
-            return false;
-          })
         controlsHtml.find('.forward').before(pageLink)
       };
-
       this.html.append(controlsHtml)
-    };
+    }
+  }
+
+  var addPaginationBehaviour = function () {
+    var self = this
+    var controlsHtml = this.html.find('.grid-view-page-controls')
+
+    controlsHtml.bind('click', function (event) {
+      var target = $(event.target)
+      if ($(this) !== target) {
+        if (target.hasClass('backward')) {
+          if (self.canPageBackward()) {
+            self.trigger('paginate', previousPageNum())
+          };
+        } else if (target.hasClass('forward')) {
+          if (self.canPageForward()) {
+            self.trigger('paginate', nextPageNum())
+          };
+        } else if (target.hasClass('page-link')) {
+          self.trigger('paginate', parseInt(target.text()))
+        };
+      };
+      return false;
+    })
   }
 
   var moreCollectionItemsRequired = function (pageNum) {
@@ -155,8 +161,8 @@ Jam.GridView = function (name, options) {
       for (var i=1; i <= pagesRequired(); i++) {
         drawPage.call(this, i);
       };
-      this.bind('pageAnimateStart', function () { drawPaginationControls.call(this) });
       drawPaginationControls.call(this);
+      addPaginationBehaviour.call(this);
       displayCurrentPage.call(this);
     };
 
@@ -177,6 +183,7 @@ Jam.GridView = function (name, options) {
   // scroll the grid to show the page number passed in as an argument
   gridView.showPage = function (pageNum) {
     var self = this
+    var pageNum = parseInt(pageNum)
     if (pageNum <= pagesRequired() && pageNum > 0) {
       currentPage = pageNum;
       this.trigger('pageAnimationStart', pageNum);
